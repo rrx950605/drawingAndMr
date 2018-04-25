@@ -39,7 +39,9 @@ public class Light {
                         controller(3, ip, key, on, 200, 12750, 254);
                         controller(4, ip, key, on, 200, 12750, 254);
                         controller(5, ip, key, on, 200, 12750, 254);
+/*
                         Thread.sleep(60000L);
+*/
                         break;
                     //离开坐垫
                     case 0:
@@ -76,9 +78,9 @@ public class Light {
                 time.add(System.currentTimeMillis());
                 //4秒连续没有数据判断为设备断开
                 if (time.size() > 2 && (time.get(time.size() - 1) - time.get(0)) > 4000) {
-                    controller(3, ip, key, off, 0, 0, 0);
+                   /* controller(3, ip, key, off, 0, 0, 0);
                     controller(4, ip, key, off, 0, 0, 0);
-                    controller(5, ip, key, off, 0, 0, 0);
+                    controller(5, ip, key, off, 0, 0, 0);*/
                 }
             }
         }

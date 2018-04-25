@@ -12,5 +12,6 @@ class Ts extends JFrame {
         setSize(400, 300);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
+        System.out.println("s");
     }
 }
