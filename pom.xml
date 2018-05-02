@@ -56,7 +56,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>Ms</finalName>
+        <finalName>LightColor</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -100,7 +100,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.bbkj.controller.Ms</mainClass>
+                            <mainClass>com.bbkj.controller.Light</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

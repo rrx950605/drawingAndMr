@@ -1,9 +1,7 @@
 package com.bbkj.utils;
 
-import okhttp3.*;
 import redis.clients.jedis.Jedis;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +18,7 @@ public class Light {
 
     public static void main(String[] args) {
         connectRedis();
-        String ip = "192.168.1.102";
+        String ip = "192.168.1.100";
         String key = "O1a1JJb3XZw2DUAOXtpDoIFviJ4Pf7vrq60qMQ9K";
         String on = "false";
         int h = 46920;
@@ -129,6 +127,8 @@ public class Light {
                             controller(5, ip, key, on, 200, h, 254);
                         }*/
                         break;
+                    default:
+
                 }
 
             } else {
@@ -156,20 +156,6 @@ public class Light {
      * @param sat    饱和度
      */
     private static void controller(int lights, String ip, String key, String on, int bri, int hue, int sat) {
-        OkHttpClient client = new OkHttpClient();
-        MediaType mediaType = MediaType.parse("application/json; charset=UTF-8");
-        RequestBody body = RequestBody.create(mediaType, "{\"on\":" + on + ",\"bri\":" + bri + ",\"hue\":" + hue + ",\"sat\":" + sat + "}");
-        Request request = new Request.Builder()
-                .url("http://" + ip + "/api/" + key + "/lights/" + lights + "/state")
-                .put(body)
-                .addHeader("Content-Type", "application/json; charset=UTF-8")
-                .build();
-        try {
-            Response execute = client.newCall(request).execute();
-            execute.close();
-//            System.out.println(response.body().string());
-        } catch (IOException e) {
-            System.out.println(e);
-        }
+        com.bbkj.controller.Light.controllerLight(lights, ip, key, on, bri, hue, sat);
     }
 }

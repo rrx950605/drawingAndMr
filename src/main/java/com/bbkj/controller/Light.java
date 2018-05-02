@@ -14,7 +14,7 @@ import java.util.List;
 public class Light {
     private static Jedis jedis = new Jedis();
 
-    public static void connectRedis() {
+    private static void connectRedis() {
         // 连接redis服务器
         jedis = RedisUtil.getJedis();
     }
@@ -31,6 +31,7 @@ public class Light {
         while (true) {
             String hue = jedis.rpop("hue");
             if (hue != null) {
+                time.clear();
                 System.out.println(hue);
                 String[] hubArr = hue.split(",");
                 switch (Integer.parseInt(hubArr[0])) {
@@ -75,12 +76,14 @@ public class Light {
 
                 }
             } else {
-                time.add(System.currentTimeMillis());
-                //4秒连续没有数据判断为设备断开
-                if (time.size() > 2 && (time.get(time.size() - 1) - time.get(0)) > 4000) {
-                   /* controller(3, ip, key, off, 0, 0, 0);
-                    controller(4, ip, key, off, 0, 0, 0);
-                    controller(5, ip, key, off, 0, 0, 0);*/
+                long t = System.currentTimeMillis();
+                time.add(t);
+                if (time.size() > 2) {
+                    if (time.get(time.size() - 1) - time.get(0) > 2000) {
+                        controller(3, ip, key, off, 200, 46920, 254);
+                        controller(4, ip, key, off, 200, 46920, 254);
+                        controller(5, ip, key, off, 200, 46920, 254);
+                    }
                 }
             }
         }
@@ -96,6 +99,10 @@ public class Light {
      * @param sat    饱和度
      */
     private static void controller(int lights, String ip, String key, String on, int bri, int hue, int sat) {
+        controllerLight(lights, ip, key, on, bri, hue, sat);
+    }
+
+    public static void controllerLight(int lights, String ip, String key, String on, int bri, int hue, int sat) {
         OkHttpClient client = new OkHttpClient();
         MediaType mediaType = MediaType.parse("application/json; charset=UTF-8");
         RequestBody body = RequestBody.create(mediaType, "{\"on\":" + on + ",\"bri\":" + bri + ",\"hue\":" + hue + ",\"sat\":" + sat + "}");
