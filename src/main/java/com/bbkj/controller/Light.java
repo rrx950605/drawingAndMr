@@ -54,22 +54,22 @@ public class Light {
                     case 1:
 
                         if (Integer.parseInt(hubArr[1]) == -1) {
-                            controller(3, ip, key, on, 140, 46920, Integer.parseInt(hubArr[2]) + 30);
-                            controller(4, ip, key, on, 140, 46920, Integer.parseInt(hubArr[2]) + 30);
-                            controller(5, ip, key, on, 140, 46920, Integer.parseInt(hubArr[2]) + 30);
+                            controller(3, ip, key, on, 140, 46920, Integer.parseInt(hubArr[2]) /2+30);
+                            controller(4, ip, key, on, 140, 46920, Integer.parseInt(hubArr[2]) /2+30);
+                            controller(5, ip, key, on, 140, 46920, Integer.parseInt(hubArr[2]) /2+30);
 
                         } else if (Integer.parseInt(hubArr[1]) == 1) {
 
-                            controller(3, ip, key, on, 200, 46920, Integer.parseInt(hubArr[2]) + 30);
-                            controller(4, ip, key, on, 200, 46920, Integer.parseInt(hubArr[2]) + 30);
-                            controller(5, ip, key, on, 200, 46920, Integer.parseInt(hubArr[2]) + 30);
+                            controller(3, ip, key, on, 200, 46920, Integer.parseInt(hubArr[2]) /2+30);
+                            controller(4, ip, key, on, 200, 46920, Integer.parseInt(hubArr[2]) /2+30);
+                            controller(5, ip, key, on, 200, 46920, Integer.parseInt(hubArr[2]) /2+30);
                         }
                         break;
                     //体动
                     case 2:
-                        controller(3, ip, key, on, 200, 0, 254);
+                       /* controller(3, ip, key, on, 200, 0, 254);
                         controller(4, ip, key, on, 200, 0, 254);
-                        controller(5, ip, key, on, 200, 0, 254);
+                        controller(5, ip, key, on, 200, 0, 254);*/
                         break;
 
                     default:
