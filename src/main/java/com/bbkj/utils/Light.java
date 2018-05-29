@@ -1,7 +1,11 @@
 package com.bbkj.utils;
 
+import com.mollin.yapi.YeelightDevice;
 import redis.clients.jedis.Jedis;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,13 +20,18 @@ public class Light {
         jedis = RedisUtil.getJedis();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         connectRedis();
         String ip = "192.168.1.100";
         String key = "O1a1JJb3XZw2DUAOXtpDoIFviJ4Pf7vrq60qMQ9K";
         String on = "false";
+        YeelightDevice device = new YeelightDevice("192.168.99.100");
+        String magicip = "192.168.137.33";
+        byte[] magicon = {(byte) 0x71, (byte) 0x23, (byte) 0x0F, (byte) 0xA3};
+        byte[] magicoff = {(byte) 0x71, (byte) 0x24, (byte) 0x0F, (byte) 0xA4};
         int h = 46920;
         jedis.flushAll();
+        controllerYee(device, false, 144, 238, 144, 20);
         controller(3, ip, key, "false", 250, h, 254);
         controller(4, ip, key, "false", 250, h, 254);
         controller(5, ip, key, "false", 250, h, 254);
@@ -48,6 +57,8 @@ public class Light {
                                 System.out.println("憋气");
                                 if ("true".equals(on)) {
                                     on = "false";
+                                    controllerYee(device, false, 144, 238, 144, 20);
+                                    magicLight(magicip, magicoff);
                                     controller(3, ip, key, on, 250, h, 254);
                                     controller(4, ip, key, on, 250, h, 254);
                                     controller(5, ip, key, on, 250, h, 254);
@@ -58,15 +69,8 @@ public class Light {
                                     on = "true";
                                     x++;
                                     if (x % 2 != 0) {
-                                        h = 46920;
-                                        controller(3, ip, key, on, 250, h, 254);
-                                        controller(4, ip, key, on, 250, h, 254);
-                                        controller(5, ip, key, on, 250, h, 254);
-                                        controller(3, ip, key, on, 250, h, 254);
-                                        controller(4, ip, key, on, 250, h, 254);
-                                        controller(5, ip, key, on, 250, h, 254);
-                                    } else {
-                                        h = 46920;
+                                        controllerYee(device, true, 144, 238, 144, 20);
+                                        magicLight(magicip, magicon);
                                         controller(3, ip, key, on, 250, h, 254);
                                         controller(4, ip, key, on, 250, h, 254);
                                         controller(5, ip, key, on, 250, h, 254);
@@ -81,51 +85,17 @@ public class Light {
                     case 0:
                         c = 0;
                         s = 0;
-                        /*controller(3, ip, key, on, 200, 46920, 254);
-                        controller(4, ip, key, on, 200, 46920, 254);
-                        controller(5, ip, key, on, 200, 46920, 254);*/
+
                         break;
 
                     case 1:
                         c = 0;
 
                         s = 0;
-                        /*if (Integer.parseInt(hubArr[1]) == -1) {
-                            if (Integer.parseInt(hubArr[2]) > 100 && Integer.parseInt(hubArr[2]) < 200) {
-                                controller(3, ip, key, on, 140, 46920, Integer.parseInt(hubArr[2]) + 30);
-                                controller(4, ip, key, on, 140, 46920, Integer.parseInt(hubArr[2]) + 30);
-                                controller(5, ip, key, on, 140, 46920, Integer.parseInt(hubArr[2]) + 30);
-                            } else {
-                                controller(3, ip, key, on, 150, 46920, Integer.parseInt(hubArr[2]));
-                                controller(4, ip, key, on, 150, 46920, Integer.parseInt(hubArr[2]));
-                                controller(5, ip, key, on, 150, 46920, Integer.parseInt(hubArr[2]));
-                            }
-                        } else if (Integer.parseInt(hubArr[1]) == 1) {
-                            if (Integer.parseInt(hubArr[2]) > 100 && Integer.parseInt(hubArr[2]) < 200) {
-                                controller(3, ip, key, on, 200, 46920, Integer.parseInt(hubArr[2]) + 30);
-                                controller(4, ip, key, on, 200, 46920, Integer.parseInt(hubArr[2]) + 30);
-                                controller(5, ip, key, on, 200, 46920, Integer.parseInt(hubArr[2]) + 30);
-                            } else {
-                                controller(3, ip, key, on, 220, 46920, 254);
-                                controller(4, ip, key, on, 220, 46920, 254);
-                                controller(5, ip, key, on, 220, 46920, 254);
-                            }
-                        }*/
+
                         break;
                     case 2:
-                        /*controller(3, ip, key, on, 250, 46920, 254);
-                        controller(4, ip, key, on, 250, 46920, 254);
-                        controller(5, ip, key, on, 250, 46920, 254);*/
-                       /* x++;
-                        if (x % 2 == 0) {
-                            controller(3, ip, key, on, 100, h, 254);
-                            controller(4, ip, key, on, 100, h, 254);
-                            controller(5, ip, key, on, 100, h, 254);
-                        } else {
-                            controller(3, ip, key, on, 200, h, 254);
-                            controller(4, ip, key, on, 200, h, 254);
-                            controller(5, ip, key, on, 200, h, 254);
-                        }*/
+
                         break;
                     default:
 
@@ -157,5 +127,25 @@ public class Light {
      */
     private static void controller(int lights, String ip, String key, String on, int bri, int hue, int sat) {
         com.bbkj.controller.Light.controllerLight(lights, ip, key, on, bri, hue, sat);
+    }
+
+    private static void controllerYee(YeelightDevice device, boolean power, int r, int g, int b, int ness) throws Exception {
+        //开灯
+        device.setPower(power);
+        //设置rgb颜色
+        device.setRGB(r, g, b);
+        //设置亮度
+        device.setBrightness(ness);
+    }
+
+    private static void magicLight(String ip, byte[] bytes) throws Exception {
+        Socket client = new Socket(ip, 5577);
+        InputStream in = client.getInputStream();
+        OutputStream out = client.getOutputStream();
+        out.write(bytes);
+        out.close();
+        in.close();
+        client.close();
+        System.out.println("success");
     }
 }
