@@ -5,6 +5,9 @@ import com.bbkj.utils.RedisUtil;
 import com.mollin.yapi.YeelightDevice;
 import redis.clients.jedis.Jedis;
 
+/**
+ * @author rrx
+ */
 public class yeelight {
 
     private static Jedis jedis = new Jedis();

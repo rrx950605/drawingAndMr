@@ -1,8 +1,10 @@
 package com.bbkj.utils;
 
 import com.mollin.yapi.YeelightDevice;
+import okhttp3.*;
 import redis.clients.jedis.Jedis;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -116,18 +118,6 @@ public class Light {
 
     }
 
-    /**
-     * @param lights 设备号
-     * @param ip     网桥ip
-     * @param key    用户key
-     * @param on     灯的开关
-     * @param bri    亮度
-     * @param hue    色调
-     * @param sat    饱和度
-     */
-    private static void controller(int lights, String ip, String key, String on, int bri, int hue, int sat) {
-        com.bbkj.controller.Light.controllerLight(lights, ip, key, on, bri, hue, sat);
-    }
 
     private static void controllerYee(YeelightDevice device, boolean power, int r, int g, int b, int ness) throws Exception {
         //开灯
@@ -147,5 +137,32 @@ public class Light {
         in.close();
         client.close();
         System.out.println("success");
+    }
+
+    /**
+     * @param lights 设备号
+     * @param ip     网桥ip
+     * @param key    用户key
+     * @param on     灯的开关
+     * @param bri    亮度
+     * @param hue    色调
+     * @param sat    饱和度
+     */
+
+    public static void controller(int lights, String ip, String key, String on, int bri, int hue, int sat) {
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json; charset=UTF-8");
+        RequestBody body = RequestBody.create(mediaType, "{\"on\":" + on + ",\"bri\":" + bri + ",\"hue\":" + hue + ",\"sat\":" + sat + "}");
+        Request request = new Request.Builder()
+                .url("http://" + ip + "/api/" + key + "/lights/" + lights + "/state")
+                .put(body)
+                .addHeader("Content-Type", "application/json; charset=UTF-8")
+                .build();
+        try {
+            Response execute = client.newCall(request).execute();
+            execute.close();
+        } catch (IOException e) {
+            System.out.println(e);
+        }
     }
 }
