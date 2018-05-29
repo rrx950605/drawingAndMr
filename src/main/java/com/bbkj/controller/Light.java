@@ -99,7 +99,7 @@ public class Light {
         controllerLight(lights, ip, key, on, bri, hue, sat);
     }
 
-    public static void controllerLight(int lights, String ip, String key, String on, int bri, int hue, int sat) {
+    private static void controllerLight(int lights, String ip, String key, String on, int bri, int hue, int sat) {
         OkHttpClient client = new OkHttpClient();
         MediaType mediaType = MediaType.parse("application/json; charset=UTF-8");
         RequestBody body = RequestBody.create(mediaType, "{\"on\":" + on + ",\"bri\":" + bri + ",\"hue\":" + hue + ",\"sat\":" + sat + "}");
