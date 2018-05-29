@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author rrx
@@ -34,21 +32,19 @@ public class Light {
         int h = 46920;
         jedis.flushAll();
         controllerYee(device, false, 144, 238, 144, 20);
+        controllermagicLight(magicip, magicoff);
         controller(3, ip, key, "false", 250, h, 254);
         controller(4, ip, key, "false", 250, h, 254);
         controller(5, ip, key, "false", 250, h, 254);
         controller(3, ip, key, "false", 250, h, 254);
         controller(4, ip, key, "false", 250, h, 254);
         controller(5, ip, key, "false", 250, h, 254);
-        List<Long> time = new ArrayList<>();
         int s = 0;
         int x = 0;
         int c = 0;
         while (true) {
             String hue = jedis.rpop("hue");
             if (hue != null) {
-                time.clear();
-                System.out.println(hue);
                 String[] hubArr = hue.split(",");
                 switch (Integer.parseInt(hubArr[0])) {
                     case -1:
@@ -60,7 +56,7 @@ public class Light {
                                 if ("true".equals(on)) {
                                     on = "false";
                                     controllerYee(device, false, 144, 238, 144, 20);
-                                    magicLight(magicip, magicoff);
+                                    controllermagicLight(magicip, magicoff);
                                     controller(3, ip, key, on, 250, h, 254);
                                     controller(4, ip, key, on, 250, h, 254);
                                     controller(5, ip, key, on, 250, h, 254);
@@ -72,7 +68,7 @@ public class Light {
                                     x++;
                                     if (x % 2 != 0) {
                                         controllerYee(device, true, 144, 238, 144, 20);
-                                        magicLight(magicip, magicon);
+                                        controllermagicLight(magicip, magicon);
                                         controller(3, ip, key, on, 250, h, 254);
                                         controller(4, ip, key, on, 250, h, 254);
                                         controller(5, ip, key, on, 250, h, 254);
@@ -118,7 +114,17 @@ public class Light {
 
     }
 
-
+    /**
+     * yeelight控制
+     *
+     * @param device
+     * @param power
+     * @param r
+     * @param g
+     * @param b
+     * @param ness
+     * @throws Exception
+     */
     private static void controllerYee(YeelightDevice device, boolean power, int r, int g, int b, int ness) throws Exception {
         //开灯
         device.setPower(power);
@@ -128,7 +134,14 @@ public class Light {
         device.setBrightness(ness);
     }
 
-    private static void magicLight(String ip, byte[] bytes) throws Exception {
+    /**
+     * magic控制
+     *
+     * @param ip
+     * @param bytes
+     * @throws Exception
+     */
+    private static void controllermagicLight(String ip, byte[] bytes) throws Exception {
         Socket client = new Socket(ip, 5577);
         InputStream in = client.getInputStream();
         OutputStream out = client.getOutputStream();

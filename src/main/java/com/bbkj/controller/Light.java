@@ -19,7 +19,7 @@ public class Light {
         jedis = RedisUtil.getJedis();
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         connectRedis();
         String ip = "192.168.1.100";
         String key = "O1a1JJb3XZw2DUAOXtpDoIFviJ4Pf7vrq60qMQ9K";
@@ -40,9 +40,6 @@ public class Light {
                         controller(3, ip, key, on, 200, 12750, 254);
                         controller(4, ip, key, on, 200, 12750, 254);
                         controller(5, ip, key, on, 200, 12750, 254);
-/*
-                        Thread.sleep(60000L);
-*/
                         break;
                     //离开坐垫
                     case 0:
@@ -54,15 +51,15 @@ public class Light {
                     case 1:
 
                         if (Integer.parseInt(hubArr[1]) == -1) {
-                            controller(3, ip, key, on, 140, 46920, Integer.parseInt(hubArr[2]) /2+30);
-                            controller(4, ip, key, on, 140, 46920, Integer.parseInt(hubArr[2]) /2+30);
-                            controller(5, ip, key, on, 140, 46920, Integer.parseInt(hubArr[2]) /2+30);
+                            controller(3, ip, key, on, 140, 46920, Integer.parseInt(hubArr[2]) / 2 + 30);
+                            controller(4, ip, key, on, 140, 46920, Integer.parseInt(hubArr[2]) / 2 + 30);
+                            controller(5, ip, key, on, 140, 46920, Integer.parseInt(hubArr[2]) / 2 + 30);
 
                         } else if (Integer.parseInt(hubArr[1]) == 1) {
 
-                            controller(3, ip, key, on, 200, 46920, Integer.parseInt(hubArr[2]) /2+30);
-                            controller(4, ip, key, on, 200, 46920, Integer.parseInt(hubArr[2]) /2+30);
-                            controller(5, ip, key, on, 200, 46920, Integer.parseInt(hubArr[2]) /2+30);
+                            controller(3, ip, key, on, 200, 46920, Integer.parseInt(hubArr[2]) / 2 + 30);
+                            controller(4, ip, key, on, 200, 46920, Integer.parseInt(hubArr[2]) / 2 + 30);
+                            controller(5, ip, key, on, 200, 46920, Integer.parseInt(hubArr[2]) / 2 + 30);
                         }
                         break;
                     //体动
