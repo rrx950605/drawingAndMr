@@ -17,14 +17,10 @@ import java.net.Socket;
  */
 public class Light {
     private static Jedis jedis = new Jedis();
-
-    private static String sendStr = "HF-A11ASSISTHREAD";
-    private static String netAddress = "255.255.255.255";
     private static final int PORT_NUM = 48899;
     private static DatagramSocket datagramSocket;
-    private static DatagramPacket datagramPacket;
 
-    public static void connectRedis() {
+    private static void connectRedis() {
         // 连接redis服务器
         jedis = RedisUtil.getJedis();
     }
@@ -108,16 +104,6 @@ public class Light {
 
                 }
 
-            } else {
-                /*long t = System.currentTimeMillis();
-                time.add(t);
-                if (time.size() > 2) {
-                    if (time.get(time.size() - 1) - time.get(0) > 2000) {
-                        controller(3, ip, key, on, 200, 46920, 254);
-                        controller(4, ip, key, on, 200, 46920, 254);
-                        controller(5, ip, key, on, 200, 46920, 254);
-                    }
-                }*/
             }
         }
 
@@ -193,9 +179,11 @@ public class Light {
         try {
             /*** 发送数据***/
             datagramSocket = new DatagramSocket();
+            String sendStr = "HF-A11ASSISTHREAD";
             byte[] buf = sendStr.getBytes();
+            String netAddress = "255.255.255.255";
             InetAddress address = InetAddress.getByName(netAddress);
-            datagramPacket = new DatagramPacket(buf, buf.length, address, PORT_NUM);
+            DatagramPacket datagramPacket = new DatagramPacket(buf, buf.length, address, PORT_NUM);
             datagramSocket.send(datagramPacket);
             datagramSocket.setSoTimeout(5000);
             /*** 接收数据***/
