@@ -7,6 +7,9 @@ import redis.clients.jedis.Jedis;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.Socket;
 
 /**
@@ -14,6 +17,12 @@ import java.net.Socket;
  */
 public class Light {
     private static Jedis jedis = new Jedis();
+
+    private static String sendStr = "HF-A11ASSISTHREAD";
+    private static String netAddress = "255.255.255.255";
+    private static final int PORT_NUM = 48899;
+    private static DatagramSocket datagramSocket;
+    private static DatagramPacket datagramPacket;
 
     public static void connectRedis() {
         // 连接redis服务器
@@ -26,7 +35,7 @@ public class Light {
         String key = "O1a1JJb3XZw2DUAOXtpDoIFviJ4Pf7vrq60qMQ9K";
         String on = "false";
         YeelightDevice device = new YeelightDevice("192.168.99.100");
-        String magicip = "192.168.137.33";
+        String magicip = start().replace("/", "");
         byte[] magicon = {(byte) 0x71, (byte) 0x23, (byte) 0x0F, (byte) 0xA3};
         byte[] magicoff = {(byte) 0x71, (byte) 0x24, (byte) 0x0F, (byte) 0xA4};
         int h = 46920;
@@ -177,5 +186,30 @@ public class Light {
         } catch (IOException e) {
             System.out.println(e);
         }
+    }
+
+    private static String start() {
+        String add = "";
+        try {
+            /*** 发送数据***/
+            datagramSocket = new DatagramSocket();
+            byte[] buf = sendStr.getBytes();
+            InetAddress address = InetAddress.getByName(netAddress);
+            datagramPacket = new DatagramPacket(buf, buf.length, address, PORT_NUM);
+            datagramSocket.send(datagramPacket);
+            datagramSocket.setSoTimeout(5000);
+            /*** 接收数据***/
+            byte[] receBuf = new byte[1024];
+            DatagramPacket recePacket = new DatagramPacket(receBuf, receBuf.length);
+            datagramSocket.receive(recePacket);
+            add = recePacket.getAddress().toString();
+        } catch (Exception e) {
+            System.out.println("连接同一个wifi");
+        } finally {
+            if (datagramSocket != null) {
+                datagramSocket.close();
+            }
+        }
+        return add;
     }
 }
