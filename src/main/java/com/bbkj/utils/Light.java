@@ -30,13 +30,13 @@ public class Light {
         String ip = "192.168.1.100";
         String key = "O1a1JJb3XZw2DUAOXtpDoIFviJ4Pf7vrq60qMQ9K";
         String on = "false";
-        YeelightDevice device = new YeelightDevice("192.168.99.100");
+        /*YeelightDevice device = new YeelightDevice("192.168.99.100");*/
         String magicip = start().replace("/", "");
         byte[] magicon = {(byte) 0x71, (byte) 0x23, (byte) 0x0F, (byte) 0xA3};
         byte[] magicoff = {(byte) 0x71, (byte) 0x24, (byte) 0x0F, (byte) 0xA4};
         int h = 46920;
         jedis.flushAll();
-        controllerYee(device, false, 144, 238, 144, 20);
+        /*controllerYee(device, false, 144, 238, 144, 20);*/
         controllermagicLight(magicip, magicoff);
         controller(3, ip, key, "false", 250, h, 254);
         controller(4, ip, key, "false", 250, h, 254);
@@ -60,7 +60,7 @@ public class Light {
                                 System.out.println("憋气");
                                 if ("true".equals(on)) {
                                     on = "false";
-                                    controllerYee(device, false, 144, 238, 144, 20);
+                                    /*controllerYee(device, false, 144, 238, 144, 20);*/
                                     controllermagicLight(magicip, magicoff);
                                     controller(3, ip, key, on, 250, h, 254);
                                     controller(4, ip, key, on, 250, h, 254);
@@ -72,7 +72,7 @@ public class Light {
                                     on = "true";
                                     x++;
                                     if (x % 2 != 0) {
-                                        controllerYee(device, true, 144, 238, 144, 20);
+                                        /*controllerYee(device, true, 144, 238, 144, 20);*/
                                         controllermagicLight(magicip, magicon);
                                         controller(3, ip, key, on, 250, h, 254);
                                         controller(4, ip, key, on, 250, h, 254);
